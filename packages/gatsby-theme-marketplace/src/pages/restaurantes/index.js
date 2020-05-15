@@ -1,0 +1,53 @@
+/**@jsx jsx */
+import { jsx } from 'theme-ui';
+import { graphql } from 'gatsby';
+
+import Layout from '../../components/layout';
+import Market from '../../components/market';
+
+export const query = graphql`
+  query {
+    fauna {
+      allMarkets {
+        data {
+          _id
+          name
+          background
+          logo
+          path
+          slogan
+          address
+          phone
+          products {
+            _id
+            title
+            price
+          }
+        }
+      }
+    }
+  }
+`;
+const Index = ({ data }) => {
+  const markets = data.fauna.allMarkets.data;
+  return (
+    <Layout>
+      <div sx={{ variant: 'container.primary' }}>
+        <h1 sx={{ variant: 'text.heading' }}>Restaurantes</h1>
+        <div
+          sx={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(16rem, 1fr));',
+            gridGap: '8px',
+          }}
+        >
+          {markets.map((market) => (
+            <Market market={market} key={market._id} />
+          ))}
+        </div>
+      </div>
+    </Layout>
+  );
+};
+
+export default Index;

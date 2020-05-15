@@ -1,0 +1,17 @@
+{
+  "name": "food-market",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Gabriel Rojas",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "develop": "gatsby clean && gatsby develop"
+  },
+  "dependencies": {
+    "gatsby": "^2.21.24",
+    "gatsby-theme-marketplace": "*",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  }
+}
