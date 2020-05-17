@@ -1,6 +1,7 @@
 /**@jsx jsx */
 import { jsx } from 'theme-ui';
 import { graphql } from 'gatsby';
+import { useQuery, gql } from '@apollo/client';
 
 import Layout from '../../components/layout';
 import Market from '../../components/market';
@@ -42,7 +43,7 @@ const Index = ({ data }) => {
           }}
         >
           {markets.map((market) => (
-            <Market market={market} key={market._id} />
+            <Market key={market._id} market={market} />
           ))}
         </div>
       </div>

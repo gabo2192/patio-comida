@@ -6,6 +6,7 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "@apollo/client": "^3.0.0-beta.48",
     "@emotion/core": "^10.0.28",
     "@mdx-js/mdx": "^1.6.1",
     "@mdx-js/react": "^1.6.1",
@@ -14,7 +15,9 @@
     "gatsby-plugin-theme-ui": "^0.3.0",
     "gatsby-source-filesystem": "^2.3.1",
     "gatsby-source-graphql": "^2.5.1",
+    "graphql": "^15.0.0",
     "mdx-utils": "^0.2.0",
+    "node-fetch": "^2.6.0",
     "react-icons": "^3.10.0",
     "sf-mono": "^1.0.0",
     "theme-ui": "^0.3.1",
