@@ -9,7 +9,7 @@ module.exports = {
       options: {
         basePath: 'restaurantes',
         contentPath: 'restaurantes',
-        faunaSecret: process.env.FAUNA_SECRET,
+        faunaSecret: process.env.GATSBY_FAUNA_SECRET,
       },
     },
   ],

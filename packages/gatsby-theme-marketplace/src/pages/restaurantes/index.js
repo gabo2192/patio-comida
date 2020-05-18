@@ -1,7 +1,6 @@
 /**@jsx jsx */
 import { jsx } from 'theme-ui';
 import { graphql } from 'gatsby';
-import { useQuery, gql } from '@apollo/client';
 
 import Layout from '../../components/layout';
 import Market from '../../components/market';
@@ -29,8 +28,9 @@ export const query = graphql`
     }
   }
 `;
-const Index = ({ data }) => {
-  const markets = data.fauna.allMarkets.data;
+const Index = ({ data: faunaData }) => {
+  const markets = faunaData.fauna.allMarkets.data;
+
   return (
     <Layout>
       <div sx={{ variant: 'container.primary' }}>

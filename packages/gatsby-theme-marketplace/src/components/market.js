@@ -14,7 +14,7 @@ const Market = ({ market: { name, path, background, products } }) => {
         variant: 'card.primary',
         textDecoration: 'none',
       }}
-      to={`restaurantes/${path}`}
+      to={`/restaurantes/${path}`}
     >
       <img
         src={background}
@@ -75,6 +75,7 @@ const Market = ({ market: { name, path, background, products } }) => {
         {products.map((product) => (
           <span
             sx={{ textTransform: 'capitalize' }}
+            key={product.title}
           >{`${product.title}, `}</span>
         ))}
         etc.
