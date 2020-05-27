@@ -9,6 +9,7 @@ import { Auth0Provider } from './utils/auth';
 
 const Auth0Domain = process.env.GATSBY_AUTH0_DOMAIN;
 const Auth0ClientID = process.env.GATSBY_AUTH0_CLIENT_ID;
+const Auth0Audience = process.env.GATSBY_AUTH0_AUDIENCE;
 
 const onRedirectCallback = (appState) => {
   window.history.replaceState(
@@ -25,6 +26,8 @@ export const wrapRootElement = ({ element }) => (
     domain={Auth0Domain}
     client_id={Auth0ClientID}
     redirect_uri={window.location.origin}
+    onRedirectCallback={onRedirectCallback}
+    audience={Auth0Audience}
   >
     <ApolloProvider client={client}>{element}</ApolloProvider>
   </Auth0Provider>

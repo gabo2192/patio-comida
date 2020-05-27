@@ -1,5 +1,6 @@
 /**@jsx jsx */
 import { jsx } from 'theme-ui';
+import { Fragment } from 'react';
 import { Link } from 'gatsby';
 import { useAuth0 } from '../../utils/auth';
 
@@ -22,7 +23,7 @@ const Header = () => {
         >
           <h2 sx={{ m: 0 }}>Patio de Comidas</h2>
         </Link>
-        {!isAuthenticated && (
+        {!isAuthenticated && !loading && (
           <button
             sx={{ variant: 'button.primary' }}
             onClick={() =>
@@ -33,9 +34,23 @@ const Header = () => {
           </button>
         )}
         {isAuthenticated && user && (
-          <button sx={{ variant: 'button.primary' }} onClick={() => logout()}>
-            Log out
-          </button>
+          <Fragment>
+            <Link
+              sx={{
+                textDecoration: 'none',
+                padding: 0,
+                marginRight: '10px',
+                fontSize: '17px',
+                variant: 'button.primary',
+              }}
+              to="cuenta/details"
+            >
+              Cuenta
+            </Link>
+            <button sx={{ variant: 'button.primary' }} onClick={() => logout()}>
+              Log out
+            </button>
+          </Fragment>
         )}
       </div>
     </header>

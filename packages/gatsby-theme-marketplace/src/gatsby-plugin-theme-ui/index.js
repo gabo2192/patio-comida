@@ -60,6 +60,14 @@ export default {
       fontSize: 0,
     },
   },
+  form: {
+    inputContainer: {
+      display: 'grid',
+      gridTemplateColumns: '35px 1fr',
+      gridTemplateRows: '35px',
+      mb: '16px',
+    },
+  },
   button: {
     primary: {
       bg: 'primary',
@@ -74,7 +82,23 @@ export default {
       textTransform: 'uppercase',
       transition: '250ms all linear',
       ':focus, :hover': {
-        borderCoplor: 'text',
+        borderColor: 'text',
+      },
+    },
+    secondary: {
+      bg: 'secondary',
+      p: '8px',
+      border: (t) => `2px solid ${t.colors.secondary}`,
+      borderRadius: 6,
+      color: 'black',
+      cursor: 'pointer',
+      fontSize: 13,
+      fontWeight: 300,
+      letterSpacing: '0.2em',
+      textTransform: 'uppercase',
+      transition: '250ms all linear',
+      ':focus, :hover': {
+        borderColor: 'text',
       },
     },
   },

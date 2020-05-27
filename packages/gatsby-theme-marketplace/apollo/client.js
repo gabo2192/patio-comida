@@ -4,28 +4,8 @@ import {
   createHttpLink,
   gql,
 } from '@apollo/client';
-/* import fetch from 'node-fetch'; */
 
 const cache = new InMemoryCache();
-
-/* const typeDefs = gql`
-  extend type Query {
-    isAuthenticated: Boolean!
-    user: User!
-    loading: Boolean!
-    popupOpen: Boolean!
-    loginWithPopup: Boolean!
-    handleRedirectCallback: Boolean!
-    getIdTokenClaims: Boolean!
-    loginWithRedirect: Boolean!
-    getTokenSilently: Boolean!
-    getTokenWithPopup: Boolean!
-    logout: Boolean!
-  }
-  type User {
-
-  }
-`; */
 
 const link = createHttpLink({
   uri: 'https://graphql.fauna.com/graphql',
@@ -38,4 +18,29 @@ export const client = new ApolloClient({
   connectToDevTools: true,
   link,
   cache,
+  resolvers: {
+    Mutation: {
+      setLatLng: (_root, { lat, lng }, { cache }) => {
+        cache.writeQuery({
+          query: gql`
+            query GetLatLng {
+              lat
+              lng
+            }
+          `,
+          data: { lat: lat, lng: lng },
+        });
+      },
+      setAddress: (_root, { address: addressData }, { cache }) => {
+        cache.writeQuery({
+          query: gql`
+            query GetAddress {
+              address
+            }
+          `,
+          data: { address: addressData },
+        });
+      },
+    },
+  },
 });

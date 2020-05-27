@@ -2,6 +2,9 @@
   "private": true,
   "workspaces": [
     "packages/*",
-    "sites/*"
-  ]
+    "site"
+  ],
+  "scripts": {
+    "develop": "yarn workspace site develop"
+  }
 }
