@@ -3,7 +3,7 @@ import { jsx } from 'theme-ui';
 import { graphql } from 'gatsby';
 
 import Layout from '../components/layout';
-import Product from '../components/product';
+import Product from '../components/market/product';
 
 export const query = graphql`
   query($pageID: ID!) {
@@ -21,7 +21,6 @@ export const query = graphql`
           title
           image
           description
-          calories
           price
         }
       }

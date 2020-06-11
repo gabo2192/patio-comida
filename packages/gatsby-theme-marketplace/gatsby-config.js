@@ -4,6 +4,14 @@ module.exports = (options) => {
   const { faunaSecret } = withDefaults(options);
   return {
     plugins: [
+      `gatsby-plugin-sharp`,
+      `gatsby-transformer-sharp`,
+      {
+        resolve: 'gatsby-source-filesystem',
+        options: {
+          path: `${__dirname}/src/images`,
+        },
+      },
       {
         resolve: 'gatsby-source-graphql',
         options: {

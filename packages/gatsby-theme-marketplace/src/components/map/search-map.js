@@ -15,9 +15,10 @@ import {
   ComboboxOption,
 } from '@reach/combobox';
 
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation, useQuery } from '@apollo/client';
 
 import { FaLocationArrow } from 'react-icons/fa';
+import { GET_ADDRESS_QUERY } from '../form/user-form';
 
 export const SET_ADDRESS_MUTATION = gql`
   mutation SetAddress($address: String!) {
@@ -39,24 +40,28 @@ const Search = ({ lat, lng, panTo, formattedAddress, mapIssues }) => {
     },
   });
   const [setAddress] = useMutation(SET_ADDRESS_MUTATION);
+  const { data: addressData } = useQuery(GET_ADDRESS_QUERY);
 
   useEffect(() => {
     if (formattedAddress) {
       setValue(formattedAddress);
     }
   }, [formattedAddress, setValue]);
+
   useEffect(() => {
-    setAddress({
-      variables: { address: value },
-    });
+    addressData && addressData.address && setValue(addressData.address);
+  }, [addressData, setValue]);
+
+  useEffect(() => {
+    value.length &&
+      value.length > 2 &&
+      setAddress({
+        variables: { address: value },
+      });
   }, [value, setAddress]);
   return (
     <div
       sx={{
-        position: 'absolute',
-        top: 0,
-        zIndex: '100',
-        p: 0,
         width: '100%',
         '& input': {
           border: '1px solid #ccc',

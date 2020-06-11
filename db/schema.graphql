@@ -1,10 +1,38 @@
-enum Permission {
-  ADMIN
-  USER
-  ITEMCREATE
-  ITEMUPDATE
-  ITEMDELETE
-  PERMISSIONUPDATE
+enum Service {
+  DELIVERY
+  STOREPICKUP
+}
+
+enum Category {
+  GRILL
+  ROASTED
+  CHINESE
+  SUSHI
+  PERUVIAN
+  MENU
+  FISH
+  CAKE
+  SELVA
+  SIERRA
+  COSTA
+  SOUPS
+  FASTFOOD
+  OTHER
+}
+
+type Market {
+  name: String! @unique
+  path: String!
+  logo: String!
+  background: String!
+  services: [Service!]!
+  categories: [Category!]!
+  slogan: String!
+  phone: String!
+  address: String!
+  published: Boolean!
+  products: [Product]
+  owner: User!
 }
 
 type Product {
@@ -12,27 +40,20 @@ type Product {
   market: Market!
   image: String!
   description: String!
-  calories: String
+  featured: Boolean!
+  categories: [Category!]!
   price: Float!
-}
-
-type Market {
-  name: String!
-  path: String!
-  logo: String!
-  background: String!
-  slogan: String!
-  phone: String!
-  address: String!
-  products: [Product!]!
+  owner: User!
 }
 
 type User {
-  authId: String!
+  authId: String! @unique
+  market: Market
+  products: [Product]
 }
 
 type Query {
   allMarkets: [Market!]!
   allProducts: [Product]!
-  findUserByAuthId(authId: String!): User!
+  findUserByAuthId(authId: String!): User
 }

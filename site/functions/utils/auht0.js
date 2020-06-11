@@ -1,9 +1,10 @@
-require('dotenv').config({
-  path: `.env.${process.env.NODE_ENV}`,
-});
+require('dotenv').config();
+
 var jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
 const { promisify } = require('util');
+const fetch = require('node-fetch');
+const FormData = require('form-data');
 
 let signingKey;
 const client = jwksClient({
@@ -66,8 +67,37 @@ const checkHeaderForValidToken = async (headers) => {
   return decoded;
 };
 
+const getToken = async () => {
+  let token;
+  const params = {
+    grant_type: 'client_credentials',
+    client_id: `${process.env.AUTH0_CLIENT_ID}`,
+    client_secret: `${process.env.ATUH0_CLIENT_SECRET}`,
+    audience: 'https://fdwa.auth0.com/api/v2/',
+  };
+  let formBody = [];
+
+  for (let property in params) {
+    let encodedKey = encodeURIComponent(property);
+    let encodedValue = encodeURIComponent(params[property]);
+    formBody.push(encodedKey + '=' + encodedValue);
+  }
+
+  formBody = formBody.join('&');
+
+  const res = await fetch('https://fdwa.auth0.com/oauth/token', {
+    method: 'POST',
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    body: formBody,
+  })
+    .then((res) => res.json())
+    .then((json) => (token = json.access_token));
+  return token;
+};
+
 module.exports = {
   availablePermissions,
   doesUserHavePermission,
   checkHeaderForValidToken,
+  getToken,
 };

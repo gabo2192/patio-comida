@@ -2,9 +2,8 @@
 import { jsx } from 'theme-ui';
 import { graphql } from 'gatsby';
 
-import { useAuth0 } from '../../../utils/auth';
 import Layout from '../../components/layout';
-import Market from '../../components/market';
+import Market from '../../components/market/market';
 
 export const query = graphql`
   query {
@@ -31,11 +30,10 @@ export const query = graphql`
 `;
 const Index = ({ data: faunaData }) => {
   const markets = faunaData.fauna.allMarkets.data;
-  const { user } = useAuth0();
   return (
     <Layout>
-      <div sx={{ variant: 'container.primary' }}>
-        <h1 sx={{ variant: 'text.heading' }}>Restaurantes</h1>
+      <div sx={{ variant: 'container.primary', pt: '8px' }}>
+        <h1 sx={{ variant: 'text.heading', mt: 0 }}>Restaurantes</h1>
         <div
           sx={{
             display: 'grid',
@@ -48,8 +46,6 @@ const Index = ({ data: faunaData }) => {
           ))}
         </div>
       </div>
-
-      {user && console.log(user)}
     </Layout>
   );
 };

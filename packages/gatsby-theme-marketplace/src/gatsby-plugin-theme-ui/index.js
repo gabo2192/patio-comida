@@ -2,10 +2,11 @@ export default {
   colors: {
     primary: '#F2271F',
     secondary: '#F9C40A',
-    muted: '#aaa',
+    muted: '#ccc',
     text: '#000',
     background: '#FAF7F6',
     brown: '#46210C',
+    green: '#B2CB2D',
   },
   fonts: {
     body: '"San Francisco", sans-serif',
@@ -28,6 +29,7 @@ export default {
       lineHeight: 'heading',
       fontWeight: 'heading',
       color: 'brown',
+      textTransform: 'uppercase',
     },
   },
   styles: {
@@ -58,14 +60,6 @@ export default {
     h6: {
       variant: 'text.heading',
       fontSize: 0,
-    },
-  },
-  form: {
-    inputContainer: {
-      display: 'grid',
-      gridTemplateColumns: '35px 1fr',
-      gridTemplateRows: '35px',
-      mb: '16px',
     },
   },
   button: {
@@ -101,14 +95,47 @@ export default {
         borderColor: 'text',
       },
     },
+    header: {
+      bg: 'transparent',
+      border: 'transparent',
+      color: 'background',
+      cursor: 'pointer',
+      fontSize: 14,
+      fontWeight: 300,
+      letterSpacing: '0.1em',
+      textTransform: 'uppercase',
+      transition: '250ms all linear',
+      p: 0,
+
+      ':focus, :hover': {
+        color: 'secondary',
+      },
+    },
+    link: {
+      bg: 'primary',
+      p: '8px',
+      border: (t) => `2px solid ${t.colors.primary}`,
+      borderRadius: 6,
+      color: 'background',
+      cursor: 'pointer',
+      fontSize: 17,
+      fontWeight: 300,
+      letterSpacing: '0.2em',
+      textTransform: 'uppercase',
+      transition: '250ms all linear',
+      textDecoration: 'none',
+      ':focus, :hover': {
+        borderColor: 'text',
+      },
+    },
   },
   card: {
     primary: {
       borderRadius: 6,
       mb: '16px',
       bg: 'white',
-      display: 'grid',
-      gridTemplateColumns: '1fr',
+      display: 'flex',
+      flexDirection: 'column',
       color: 'text',
       boxShadow: 'rgba(223, 223, 223, 0.5) 0px 1px 2px',
       ':focus': {
@@ -127,6 +154,30 @@ export default {
       width: '90vw',
       maxWidth: 1200,
       mx: 'auto',
+      height: '100%',
+    },
+    grid: {
+      display: 'grid',
+      gridTemplateColumns: ['1fr', '1fr 1fr', '1fr 1fr'],
+      mt: '16px',
+      gap: '8px',
+      /*  '@media screen and (min-width: 768px)': {
+        gridTemplateColumns: '1fr 1fr',
+      }, */
+    },
+  },
+  form: {
+    primary: {
+      maxWidth: '450px',
+      height: '100%',
+      px: '8px',
+      mx: 'auto',
+      width: '100%',
+      border: '1px solid rgba(0,0,0,0.1)',
+      bg: 'white',
+      boxShadow: '0 0 15px 1px rgba(0, 0, 0, 0.1)',
+      display: 'grid',
+      gridTemplateRows: 'max-content 1fr 67px',
     },
   },
 };

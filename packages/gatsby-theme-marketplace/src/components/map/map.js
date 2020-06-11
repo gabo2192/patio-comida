@@ -8,6 +8,7 @@ import { gql, useMutation } from '@apollo/client';
 import mapStyles from './mapStyles';
 import Search from './search-map';
 import Locate from './locate';
+import ErrorMarker from './error-marker';
 
 export const SET_LAT_LNG_MUTATION = gql`
   mutation SetLatLng($lat: Float!, $lng: Float!) {
@@ -15,9 +16,28 @@ export const SET_LAT_LNG_MUTATION = gql`
   }
 `;
 
-const GoogleMapApp = ({ mapIssues }) => {
+const libraries = ['places'];
+
+const GoogleMapApp = ({
+  mapIssues,
+  markerProp,
+  center,
+  markerDefault,
+  fixedMap,
+}) => {
+  const centerDefault = {
+    lat: -12.046374,
+    lng: -77.042793,
+  };
+
   const [marker, setMarker] = useState({ lat: null, lng: null });
   const [formattedAddress, setFormattedAddress] = useState(null);
+  const [markerState, setMarkerState] = useState(false);
+  const [centerState, setCenterState] = useState(centerDefault);
+
+  useEffect(() => {
+    center && center.lat && center.lng && setCenterState(center);
+  }, [center, setCenterState]);
 
   const [setLatLng] = useMutation(SET_LAT_LNG_MUTATION);
 
@@ -30,6 +50,7 @@ const GoogleMapApp = ({ mapIssues }) => {
       setLatLng({
         variables: { lat: event.latLng.lat(), lng: event.latLng.lng() },
       });
+      setMarkerState(false);
     },
     [setLatLng],
   );
@@ -46,6 +67,9 @@ const GoogleMapApp = ({ mapIssues }) => {
   }, []);
 
   useEffect(() => {
+    markerProp && setMarkerState(true);
+    marker && marker.lat && marker.lng && setMarkerState(false);
+    !marker.lat && !marker.lng && setMarker(markerDefault);
     marker.lat &&
       marker.lng &&
       fetch(
@@ -56,18 +80,14 @@ const GoogleMapApp = ({ mapIssues }) => {
           setFormattedAddress(results.results[0].formatted_address),
         )
         .catch((err) => console.log(err));
-  }, [marker]);
-
-  const libraries = ['places'];
+  }, [marker, markerProp, markerDefault]);
 
   const mapContainerStyle = {
     width: '100%',
     height: '100%',
-  };
-
-  const center = {
-    lat: -12.046374,
-    lng: -77.042793,
+    position: 'absolute',
+    top: 0,
+    left: 0,
   };
 
   const { isLoaded, loadError } = useLoadScript({
@@ -82,43 +102,47 @@ const GoogleMapApp = ({ mapIssues }) => {
   if (loadError) return 'Error al cargar el mapa';
   if (!isLoaded) return 'Cargando el mapa...';
   return (
-    <div
-      sx={{
-        position: 'relative',
-        width: '100%',
-        height: '500px',
-        pt: '51px',
-        mb: '16px',
-      }}
-    >
-      <Search
-        lat={center.lat}
-        lng={center.lng}
-        panTo={panTo}
-        formattedAddress={formattedAddress}
-        mapIssues={mapIssues}
-      />
-      <Locate panTo={panTo} />
-      <GoogleMap
-        zoom={16}
-        center={
-          marker.lat && marker.lng
-            ? { lat: marker.lat, lng: marker.lng }
-            : { lat: center.lat, lng: center.lng }
-        }
-        mapContainerStyle={mapContainerStyle}
-        options={options}
-        onClick={onMapClick}
-        onLoad={onMapLoad}
-      >
-        <Marker
-          position={
-            marker.lat && marker.lng && { lat: marker.lat, lng: marker.lng }
-          }
-          draggable={true}
-          onDragEnd={onMapClick}
+    <div>
+      {!fixedMap && (
+        <Search
+          lat={centerState.lat}
+          lng={centerState.lng}
+          panTo={panTo}
+          formattedAddress={formattedAddress}
+          mapIssues={mapIssues}
         />
-      </GoogleMap>
+      )}
+      <div
+        sx={{
+          position: 'relative',
+          width: '100%',
+          pt: '56.25%',
+        }}
+      >
+        <Locate panTo={panTo} />
+        <GoogleMap
+          zoom={16}
+          center={marker && marker.lat && marker.lng ? marker : centerState}
+          mapContainerStyle={mapContainerStyle}
+          options={options}
+          onClick={onMapClick}
+          onLoad={onMapLoad}
+        >
+          {!fixedMap && (
+            <Marker
+              position={
+                marker && marker.lat && marker.lng ? marker : markerDefault
+              }
+              draggable={true}
+              onDragEnd={onMapClick}
+            />
+          )}
+          {fixedMap && <Marker position={markerDefault} />}
+        </GoogleMap>
+        {markerState && (
+          <ErrorMarker handleClick={() => setMarkerState(false)} />
+        )}
+      </div>
     </div>
   );
 };
