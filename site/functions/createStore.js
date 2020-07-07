@@ -75,7 +75,6 @@ exports.handler = async (event) => {
         }),
       };
     }
-    console.log(userId);
     try {
       const path = name.replace(/\s+/g, '-').toLowerCase();
       let data = null
@@ -147,7 +146,7 @@ exports.handler = async (event) => {
       return {
         statusCode: 500,
         body: JSON.stringify({
-          msg: err.message || 'Fallo la actualización en Auth0',
+          msg: err.message || 'Fallo la creación de la tienda',
         }),
       };
     }

@@ -13,6 +13,12 @@ module.exports = (options) => {
         },
       },
       {
+        resolve: 'gatsby-source-filesystem',
+        options: {
+          path: `${__dirname}/src/pages`,
+        },
+      },
+      {
         resolve: 'gatsby-source-graphql',
         options: {
           fieldName: 'fauna',

@@ -1,183 +1,194 @@
+import { alpha } from '@theme-ui/color';
+
+const defaultFontStack = [
+  '-apple-system',
+  'BlinkMacSystemFont',
+  'Raleway',
+  'Segoe UI',
+  'Roboto',
+  'Helvetica',
+  'Arial',
+  'sans-serif',
+  'Apple Color Emoji',
+  'Segoe UI Emoji',
+  'Segoe UI Symbol',
+];
+
+const colors = {
+  yellow: [
+    '#FFE664',
+    '#FFD80C', //Primary
+    '#E5C100',
+  ],
+  light: ['#FFFFFF', '#FCFCFA', '#F5F4F2', '#F0EFEB', '#EBEAE3'],
+  dark: ['#D9D6C7', '#A6A28E', '#706C55', '#3D3A28', '#000000'],
+};
+
 export default {
+  breakpoints: ['600px', '768px', '1024px'],
+  space: [0, 4, 8, 16, 32, 64, 128, 256, 512],
   colors: {
-    primary: '#F2271F',
-    secondary: '#F9C40A',
-    muted: '#ccc',
-    text: '#000',
-    background: '#FAF7F6',
-    brown: '#46210C',
-    green: '#B2CB2D',
+    ...colors,
+    text: colors.dark[4],
+    background: colors.light[3],
+    primary: colors.yellow[1],
+    muted: colors.dark[0],
   },
   fonts: {
-    body: '"San Francisco", sans-serif',
-    heading: 'McLaren, sans-serif',
+    body: defaultFontStack.join(),
+    heading: 'Raleway',
+    monospace: 'Menlo, monospace',
   },
-
-  fontSizes: [12, 14, 16, 20, 24, 32, 48, 64, 96],
+  fontSizes: [12, 14, 16, 20, 24, 32, 40, 64],
   fontWeights: {
     body: 400,
     heading: 700,
     bold: 700,
   },
+  letterSpacings: {
+    body: 'normal',
+    caps: '0.2em',
+  },
+
   lineHeights: {
     body: 1.5,
     heading: 1.125,
   },
+  radii: [0, 2, 5, 10],
   text: {
     heading: {
       fontFamily: 'heading',
       lineHeight: 'heading',
       fontWeight: 'heading',
-      color: 'brown',
-      textTransform: 'uppercase',
     },
   },
   styles: {
     root: {
       fontFamily: 'body',
+      lineHeight: 'body',
       fontWeight: 'body',
     },
     h1: {
       variant: 'text.heading',
-      fontSize: 5,
+      fontSize: 7,
+      m: 0,
     },
     h2: {
       variant: 'text.heading',
-      fontSize: 4,
+      fontSize: 6,
+      m: 0,
+      mb: 4,
     },
     h3: {
       variant: 'text.heading',
-      fontSize: 3,
+      fontSize: 5,
+      m: 0,
+      mb: 3,
     },
     h4: {
       variant: 'text.heading',
-      fontSize: 2,
+      fontSize: 4,
     },
     h5: {
       variant: 'text.heading',
-      fontSize: 1,
+      fontSize: 3,
     },
     h6: {
       variant: 'text.heading',
-      fontSize: 0,
+      fontSize: 2,
+    },
+    a: {
+      variant: 'text.heading',
+      fontSize: 1,
+      textTransform: 'uppercase',
+      p: '4px 16px ',
+      textDecoration: 'none',
+    },
+    pre: {
+      fontFamily: 'monospace',
+      overflowX: 'auto',
+      code: {
+        color: 'inherit',
+      },
+    },
+    code: {
+      fontFamily: 'monospace',
+      fontSize: 'inherit',
+    },
+    table: {
+      width: '100%',
+      borderCollapse: 'separate',
+      borderSpacing: 0,
+    },
+    th: {
+      textAlign: 'left',
+      borderBottomStyle: 'solid',
+    },
+    td: {
+      textAlign: 'left',
+      borderBottomStyle: 'solid',
     },
   },
   button: {
     primary: {
       bg: 'primary',
-      p: '8px',
-      border: (t) => `2px solid ${t.colors.primary}`,
-      borderRadius: 6,
-      color: 'background',
-      cursor: 'pointer',
-      fontSize: 17,
-      fontWeight: 300,
-      letterSpacing: '0.2em',
-      textTransform: 'uppercase',
-      transition: '250ms all linear',
-      ':focus, :hover': {
-        borderColor: 'text',
-      },
-    },
-    secondary: {
-      bg: 'secondary',
-      p: '8px',
-      border: (t) => `2px solid ${t.colors.secondary}`,
-      borderRadius: 6,
-      color: 'black',
-      cursor: 'pointer',
-      fontSize: 13,
-      fontWeight: 300,
-      letterSpacing: '0.2em',
-      textTransform: 'uppercase',
-      transition: '250ms all linear',
-      ':focus, :hover': {
-        borderColor: 'text',
-      },
-    },
-    header: {
-      bg: 'transparent',
-      border: 'transparent',
-      color: 'background',
-      cursor: 'pointer',
-      fontSize: 14,
-      fontWeight: 300,
-      letterSpacing: '0.1em',
-      textTransform: 'uppercase',
-      transition: '250ms all linear',
-      p: 0,
-
-      ':focus, :hover': {
-        color: 'secondary',
-      },
-    },
-    link: {
-      bg: 'primary',
-      p: '8px',
-      border: (t) => `2px solid ${t.colors.primary}`,
-      borderRadius: 6,
-      color: 'background',
-      cursor: 'pointer',
-      fontSize: 17,
-      fontWeight: 300,
-      letterSpacing: '0.2em',
-      textTransform: 'uppercase',
-      transition: '250ms all linear',
-      textDecoration: 'none',
-      ':focus, :hover': {
-        borderColor: 'text',
-      },
-    },
-  },
-  card: {
-    primary: {
-      borderRadius: 6,
-      mb: '16px',
-      bg: 'white',
-      display: 'flex',
-      flexDirection: 'column',
       color: 'text',
-      boxShadow: 'rgba(223, 223, 223, 0.5) 0px 1px 2px',
-      ':focus': {
-        border: (t) => `1px solid ${t.colors.brown}`,
+      borderRadius: 8,
+      height: 48,
+      fontWeight: 700,
+      fontSize: 2,
+      textTransform: 'uppercase',
+      border: 'transparent',
+      boxShadow: `0px 2px 4px rgba(96, 97, 112, 0.16), 0px 0px 1px rgba(40, 41, 61, 0.04)`,
+      '&:disabled': {
+        bg: (t) => t.colors.yellow[0],
+        boxShadow: (t) => `inset 0px 0.5px 4px ${t.colors.dark[1]}`,
       },
-      ':hover': {
-        boxShadow: 'rgba(83, 83, 83, 0.5) 0px 10px 90px',
-      },
-    },
-    shadow: {
-      boxShadow: 'rgba(223, 223, 223, 0.5) 0px 1px 2px',
     },
   },
-  container: {
-    primary: {
-      width: '90vw',
-      maxWidth: 1200,
-      mx: 'auto',
-      height: '100%',
+  // namespace variants under the theme name
+  marketplace: {
+    layout: {
+      root: {
+        color: 'text',
+        lineHeight: 'body',
+      },
+      'h1,h2,h3,h4,h5,h6': {
+        fontFamily: 'heading',
+        lineHeight: 'heading',
+        m: 0,
+        mt: 4,
+        mb: 5,
+      },
     },
-    grid: {
-      display: 'grid',
-      gridTemplateColumns: ['1fr', '1fr 1fr', '1fr 1fr'],
-      mt: '16px',
-      gap: '8px',
-      /*  '@media screen and (min-width: 768px)': {
-        gridTemplateColumns: '1fr 1fr',
-      }, */
-    },
-  },
-  form: {
-    primary: {
-      maxWidth: '450px',
-      height: '100%',
-      px: '8px',
-      mx: 'auto',
+    table: {
+      tableLayout: 'fixed',
       width: '100%',
-      border: '1px solid rgba(0,0,0,0.1)',
-      bg: 'white',
-      boxShadow: '0 0 15px 1px rgba(0, 0, 0, 0.1)',
-      display: 'grid',
-      gridTemplateRows: 'max-content 1fr 67px',
+      borderCollapse: 'collapse',
+      border: '1px solid',
+      borderColor: 'primary',
+    },
+    th: {
+      backgroundColor: 'text',
+      color: 'background',
+    },
+    'th, td': {
+      border: '1px solid',
+      borderColor: 'text',
+      p: 3,
+    },
+    'tbody tr': {
+      '&:nth-of-type(even)': {
+        bg: alpha('primary', 0.25),
+      },
+    },
+    code: {
+      fontSize: 2,
+    },
+    a: {
+      color: 'text',
+      textDecoration: 'underline',
+      textDecorationColor: 'primary',
     },
   },
 };

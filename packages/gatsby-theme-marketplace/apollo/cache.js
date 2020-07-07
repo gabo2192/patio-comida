@@ -1,29 +1,29 @@
 import { InMemoryCache } from '@apollo/client';
-import { GET_STORE } from './queries';
 
-export const cache = new InMemoryCache();
-
-/* const writeInitialData = () => {
-  cache.writeQuery({
-    query: GET_STORE,
-    data: {
-      store: {
-        __typename: 'Store',
-        name: '',
-        phone: '',
-        logo: '',
-        image: '',
-        email: '',
-        address: '',
-        lat: '',
-        lng: '',
-        categories: [],
-        services: [],
+export const cache = new InMemoryCache({
+  typePolicies: {
+    Query: {
+      fields: {
+        localState: {
+          read() {
+            return localStateVar();
+          },
+        },
       },
     },
-  });
+  },
+});
+
+const localStateValue = {
+  modalOpen: false,
+  cartOpen: false,
+  menuOpen: false,
+  address: {
+    name: '',
+    address: '',
+    lat: null,
+    lng: null,
+  },
 };
 
-writeInitialData();
-client.onResetStore(writeInitialData);
- */
+export const localStateVar = cache.makeVar(localStateValue);

@@ -1,51 +1,20 @@
 /**@jsx jsx */
 import { jsx } from 'theme-ui';
-import { graphql } from 'gatsby';
+import { Link } from 'gatsby';
+import { useQuery } from '@apollo/client';
+
+import { GET_LOCAL_STATE } from '../operations/queries/get-localstate';
 
 import Layout from '../components/layout';
-import Market from '../components/market/market';
 
-export const query = graphql`
-  query {
-    fauna {
-      allMarkets {
-        data {
-          _id
-          name
-          background
-          logo
-          path
-          slogan
-          address
-          phone
-          products {
-            _id
-            title
-            price
-          }
-        }
-      }
-    }
-  }
-`;
-const Index = ({ data: faunaData }) => {
-  const markets = faunaData.fauna.allMarkets.data;
+const Index = () => {
+  const { loading, error, data } = useQuery(GET_LOCAL_STATE);
+  if (loading) return <div>Loading...</div>;
+  console.log(error);
+  console.log(data);
   return (
     <Layout>
-      <div sx={{ variant: 'container.primary', pt: '8px' }}>
-        <h1 sx={{ variant: 'text.heading', mt: 0 }}>Los mejores productos</h1>
-        <div
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(16rem, 1fr));',
-            gridGap: '8px',
-          }}
-        >
-          {markets.map((market) => (
-            <Market key={market._id} market={market} />
-          ))}
-        </div>
-      </div>
+      <Link to="/completa-tu-perfil">Completa tu perfil</Link>
     </Layout>
   );
 };

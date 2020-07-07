@@ -35,16 +35,6 @@ const Form = ({
   logout,
   loginWithRedirect,
 }) => {
-  const [state, setState] = useState({
-    name: '',
-    phone: '',
-    address: null,
-    email: '',
-    mapIssues: false,
-    lat: null,
-    lng: null,
-  });
-
   const [errorMsg, setErrorMsg] = useState(null);
   const [successMsg, setSuccessMsg] = useState(null);
   const [markerProp, setMarkerProp] = useState(true);
@@ -53,7 +43,6 @@ const Form = ({
   const { data } = useQuery(GET_LAT_LNG_QUERY);
   const [setAddress] = useMutation(SET_ADDRESS_MUTATION);
 
-  const { name, phone, address, email, mapIssues, lat, lng } = state;
   const { data: addressData } = useQuery(GET_ADDRESS_QUERY);
 
   const latUser =
@@ -71,6 +60,17 @@ const Form = ({
       : null;
   const phoneUser = user ? user[`${NAME_SPACE}phone`] : null;
 
+  const [state, setState] = useState({
+    name: '',
+    phone: '',
+    address: addressUser || '',
+    email: '',
+    mapIssues: false,
+    lat: null,
+    lng: null,
+  });
+  const { name, phone, address, email, mapIssues, lat, lng } = state;
+
   useEffect(() => {
     user &&
       latUser &&
@@ -85,7 +85,8 @@ const Form = ({
       data.lng &&
       data.lat &&
       setState((current) => ({ ...current, lat: data.lat, lng: data.lng }));
-    addressData &&
+    !addressUser &&
+      addressData &&
       addressData.address &&
       addressData.address.length > 2 &&
       setState((current) => ({ ...current, address: addressData.address }));
@@ -122,12 +123,10 @@ const Form = ({
       lng: '',
     });
   };
-  useEffect(() => {
-    addressUser &&
-      setState((current) => ({ ...current, address: addressUser }));
-    state.address && setAddress({ variables: { address: state.address } });
-  }, [addressUser, setAddress, state.address]);
-
+  const handleAddress = (e) => {
+    setState((current) => ({ ...current, address: e.target.value }));
+    setAddress({ variables: { address: e.target.value } });
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name || !phone || !address || !email) {
@@ -159,6 +158,10 @@ const Form = ({
     } catch (err) {
       console.log(err);
     }
+  };
+
+  const handleMarker = ({ lat, lng }) => {
+    setCenter({ lat, lng });
   };
 
   return (
@@ -216,21 +219,21 @@ const Form = ({
             name="address"
             required={state.mapIssues}
             value={state.address}
-            handleChange={(e) =>
-              setState({ ...state, address: e.target.value })
-            }
+            handleChange={handleAddress}
             type="text"
             placeholder="Av Javier Prado 1234"
           >
             <FaLocationArrow sx={{ m: 'auto' }} />
           </Input>
         )}
+        {console.log(center)}
         {!mapIssues && (
           <GoogleMapApp
             mapIssues={mapIssues}
             center={center}
             markerProp={markerProp}
             markerDefault={center}
+            handleMarker={handleMarker}
           />
         )}
         <p sx={{ textAlign: 'center' }}>

@@ -1,27 +1,52 @@
-import gql from 'graphql-tag';
-import { GET_STORE } from './cache';
+import { LOCAL_STATE_QUERY } from './queries';
+import { localStateVar } from './cache';
 
 export const resolvers = {
   Mutation: {
-    setLatLng: (_root, { lat, lng }, { cache }) => {
-      cache.writeQuery({
-        query: gql`
-          query GetLatLng {
-            lat
-            lng
-          }
-        `,
-        data: { lat: lat, lng: lng },
+    closeModal: () => {
+      localStateVar({ ...localStateVar(), modalOpen: false });
+    },
+    openModal: (_root) => {
+      localStateVar({ ...localStateVar(), modalOpen: true });
+    },
+    toggleCart: (_root) => {
+      localStateVar({
+        ...localStateVar(),
+        cartOpen: !localStateVar().cartOpen,
       });
     },
-    setAddress: (_root, { address: addressData }, { cache }) => {
-      cache.writeQuery({
-        query: gql`
-          query GetAddress {
-            address
-          }
-        `,
-        data: { address: addressData },
+    toggleMenu: (_root) => {
+      localStateVar({
+        ...localStateVar(),
+        menuOpen: !localStateVar().menuOpen,
+      });
+    },
+    setAddress: (_root, { address }) => {
+      localStateVar({
+        ...localStateVar(),
+        address: {
+          ...localStateVar().address,
+          address,
+        },
+      });
+    },
+    setAddressName: (_root, { name }) => {
+      localStateVar({
+        ...localStateVar(),
+        address: {
+          ...localStateVar().address,
+          name,
+        },
+      });
+    },
+    setAddressLatLng: (_root, { lat, lng }) => {
+      localStateVar({
+        ...localStateVar(),
+        address: {
+          ...localStateVar().address,
+          lat,
+          lng,
+        },
       });
     },
   },

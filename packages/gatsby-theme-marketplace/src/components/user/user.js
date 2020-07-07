@@ -2,14 +2,20 @@
 import { jsx } from 'theme-ui';
 import { useState, useEffect } from 'react';
 import { Link } from 'gatsby';
+import { useQuery } from '@apollo/client';
+
+import { GET_USER_QUERY } from '../../operations/queries/get-user';
 
 import GoogleMapApp from '../map/map';
 
 const NAME_SPACE = 'https://patiodecomida/';
 
 const User = ({ user }) => {
+  const { loading, error, data } = useQuery(GET_USER_QUERY, {
+    variables: { authId: user.sub },
+  });
+
   const [showMap, setShowMap] = useState(false);
-  console.log(user);
   const latUser =
     user && user[`${NAME_SPACE}address`]
       ? user[`${NAME_SPACE}address`].lat
@@ -30,6 +36,8 @@ const User = ({ user }) => {
     latUser && lngUser && center && setShowMap(true);
   }, [lngUser, latUser, center, setShowMap]);
 
+  if (loading) return <div>Loading...</div>;
+  console.log(data);
   return (
     <div sx={{ variant: 'container.primary', mt: '8px', maxWidth: '768px' }}>
       <div

@@ -6,7 +6,8 @@ import { FaShippingFast, FaStore } from 'react-icons/fa';
 
 const Market = ({ market: { name, path, background, products, logo } }) => {
   let price = [];
-  products && products.forEach((product) => price.push(product.price));
+  const { data } = products;
+  data && data.forEach((product) => price.push(product.price));
   return (
     <Link
       sx={{
@@ -145,14 +146,14 @@ const Market = ({ market: { name, path, background, products, logo } }) => {
           fontSize: '13px',
         }}
       >
-        {products &&
-          products.map((product) => (
+        {data &&
+          data.map((product) => (
             <span
               sx={{ textTransform: 'capitalize' }}
               key={product.title}
             >{`${product.title}, `}</span>
           ))}
-        {products ? 'etc.' : 'Acá irá un listado de tus mejores platos'}
+        {data ? 'etc.' : 'Acá irá un listado de tus mejores platos'}
       </p>
     </Link>
   );

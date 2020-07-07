@@ -167,7 +167,7 @@ const AddMarket = ({ title, sub, getTokenSilently }) => {
         },
       });
       if (res.status === 200) {
-        navigate('/vender');
+        navigate('/cuenta/vender');
       }
     } catch (err) {
       console.log(err);

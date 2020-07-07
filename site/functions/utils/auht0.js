@@ -4,7 +4,6 @@ var jwt = require('jsonwebtoken');
 const jwksClient = require('jwks-rsa');
 const { promisify } = require('util');
 const fetch = require('node-fetch');
-const FormData = require('form-data');
 
 let signingKey;
 const client = jwksClient({
@@ -12,7 +11,7 @@ const client = jwksClient({
   cacheMaxEntries: 5, // Default value
   jwksUri: `https://${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`,
 });
-
+/* 
 const NAMESPACE = 'http://whotofollow.com';
 
 const doesUserHavePermission = (user, targetPermission) => {
@@ -29,7 +28,7 @@ const availablePermissions = {
   CREATE_INFLUENCER: 'create:influencer',
   APPROVE_INFLUENCER: 'approve:influencer',
   DELETE_INFLUENCER: 'delete:influencer',
-};
+}; */
 
 const checkHeaderForValidToken = async (headers) => {
   const rawAuthorizationHeader = headers['authorization'];
@@ -96,8 +95,9 @@ const getToken = async () => {
 };
 
 module.exports = {
+  /* 
   availablePermissions,
-  doesUserHavePermission,
+  doesUserHavePermission, */
   checkHeaderForValidToken,
   getToken,
 };

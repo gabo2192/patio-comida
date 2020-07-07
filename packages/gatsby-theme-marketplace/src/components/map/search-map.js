@@ -1,35 +1,27 @@
 /**@jsx jsx */
 import { jsx } from 'theme-ui';
-import { useEffect } from 'react';
+import { Fragment, useState } from 'react';
 
 import usePlacesAutocomplete, {
   getGeocode,
   getLatLng,
 } from 'use-places-autocomplete';
 
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxPopover,
-  ComboboxList,
-  ComboboxOption,
-} from '@reach/combobox';
+import Input from '../form/input';
 
-import { gql, useMutation, useQuery } from '@apollo/client';
+const acceptedKeys = [38, 40, 13, 27];
 
-import { FaLocationArrow } from 'react-icons/fa';
-import { GET_ADDRESS_QUERY } from '../form/user-form';
-
-export const SET_ADDRESS_MUTATION = gql`
-  mutation SetAddress($address: String!) {
-    setAddress(address: $address) @client
-  }
-`;
-
-const Search = ({ lat, lng, panTo, formattedAddress, mapIssues }) => {
+const Search = ({
+  lat,
+  lng,
+  panTo,
+  address,
+  mapIssues,
+  handleChange,
+  value,
+}) => {
   const {
     ready,
-    value,
     suggestions: { status, data },
     setValue,
     clearSuggestions,
@@ -39,98 +31,160 @@ const Search = ({ lat, lng, panTo, formattedAddress, mapIssues }) => {
       radius: 200 * 1000,
     },
   });
-  const [setAddress] = useMutation(SET_ADDRESS_MUTATION);
-  const { data: addressData } = useQuery(GET_ADDRESS_QUERY);
 
-  useEffect(() => {
-    if (formattedAddress) {
-      setValue(formattedAddress);
+  let cachedVal = '';
+  const [currIndex, setCurrIndex] = useState(null);
+  const [showSuggestions, setShowSuggestions] = useState(true);
+
+  const handleEnter = (idx) => {
+    setCurrIndex(idx);
+  };
+
+  const handleLeave = () => {
+    setCurrIndex(null);
+  };
+  const handleKeyDown = (e) => {
+    if (!hasSuggestions || !acceptedKeys.includes(e.keyCode)) return;
+
+    if (e.keyCode === 27) {
+      dismissSuggestions();
+      return;
     }
-  }, [formattedAddress, setValue]);
+    if (e.keyCode === 13) {
+      if (currIndex === null || undefined) return;
+      const suggestion = { description: value.newAddress };
+      handleSelect(e, suggestion);
+      return;
+    }
+    let nextIndex;
+    if (e.keyCode === 38) {
+      e.preventDefault();
+      nextIndex = currIndex ?? data.length;
+      nextIndex = nextIndex > 0 ? nextIndex - 1 : null;
+    } else {
+      nextIndex = currIndex ?? -1;
+      nextIndex = nextIndex < data.length - 1 ? nextIndex + 1 : null;
+    }
 
-  useEffect(() => {
-    addressData && addressData.address && setValue(addressData.address);
-  }, [addressData, setValue]);
+    setCurrIndex(nextIndex);
+    handleChange(e, data[nextIndex] ? data[nextIndex].description : cachedVal);
+  };
 
-  useEffect(() => {
-    value.length &&
-      value.length > 2 &&
-      setAddress({
-        variables: { address: value },
-      });
-  }, [value, setAddress]);
-  return (
-    <div
-      sx={{
-        width: '100%',
-        '& input': {
-          border: '1px solid #ccc',
-          borderTopRightRadius: '8px',
-          borderBottomRightRadius: '8px',
-          pl: '8px',
-          width: '100%',
-          height: '35px',
-        },
-      }}
-    >
-      <Combobox
-        onSelect={async (address) => {
-          setValue(address, false);
-          clearSuggestions();
-          try {
-            const results = await getGeocode({ address });
-            const { lat, lng } = await getLatLng(results[0]);
-            panTo({ lat, lng });
-          } catch (error) {
-            console.log('error!');
-          }
-        }}
-      >
-        <div
+  const handleInput = (e) => {
+    setShowSuggestions(true);
+    handleChange(e);
+    setValue(e.target.value);
+    cachedVal = e.target.value;
+  };
+
+  /* COMBO BOX SETUP */
+  const hasSuggestions = status === 'OK';
+
+  const dismissSuggestions = () => {
+    setCurrIndex(null);
+    clearSuggestions();
+  };
+  const handleSelect = async (e, suggestion) => {
+    const { description } = suggestion;
+    handleChange(e, description, 'newAddress');
+    setShowSuggestions(false);
+    dismissSuggestions();
+    try {
+      const results = await getGeocode({ address: description });
+      const { lat, lng } = await getLatLng(results[0]);
+      panTo({ lat, lng });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const renderSuggestions = () => {
+    const suggestions = data.map((suggestion, idx) => {
+      const {
+        id,
+        structured_formatting: { main_text, secondary_text },
+      } = suggestion;
+      return (
+        <button
+          key={id}
           sx={{
-            display: 'grid',
-            gridTemplateColumns: '35px 1fr',
-            gridTemplateRows: '35px',
-            mb: '16px',
+            listStyleType: 'none',
+            display: 'block',
+            border: 'transparent',
+            bg: (t) => (idx === currIndex ? t.colors.light[3] : 'transparent'),
+            textAlign: 'left',
+            width: '100%',
+            fontSize: 1,
+            lineHeight: 1.5,
+            p: 3,
+            py: 2,
+            '&:hover': {
+              bg: (t) => t.colors.light[3],
+              border: (t) => `1px solid ${t.colors.light[3]}`,
+            },
           }}
+          onClick={(e) => handleSelect(e, suggestion)}
+          onMouseEnter={() => handleEnter(idx)}
+          role="option"
+          aria-selected={idx === currIndex}
         >
-          <div
+          <strong>{main_text}</strong> <small>{secondary_text}</small>
+        </button>
+      );
+    });
+    return suggestions;
+  };
+
+  /* END */
+
+  return (
+    <Fragment>
+      <Input
+        type="text"
+        name="nameAddress"
+        placeholder="Casa / Trabajo"
+        handleChange={handleChange}
+        label="Lugar"
+        value={value.nameAddress}
+        required="required"
+      />
+      <div sx={{ position: 'relative' }}>
+        <Input
+          type="text"
+          name="newAddress"
+          handleChange={handleInput}
+          handleKeyDown={handleKeyDown}
+          placeholder="Escribe aquí tu dirección"
+          label="Dirección"
+          ariaAutocomplete="list"
+          ariaControls="ex-list-box"
+          value={value.newAddress}
+          disabled={!ready}
+          required="required"
+          focus={() => {
+            setShowSuggestions(true);
+          }}
+        />
+        {showSuggestions && hasSuggestions && (
+          <ul
             sx={{
-              display: 'flex',
-              bg: (t) => t.colors.primary,
-              justifyContent: 'center',
-              alignItems: 'center',
-              color: 'white',
-              borderTopLeftRadius: '8px',
-              borderBottomLeftRadius: '8px',
+              position: 'absolute',
+              px: 0,
+              top: '48px',
+              border: (t) => `1px solid ${t.colors.light[3]}`,
+              width: '100%',
+              zIndex: 200,
+              bg: 'white',
+              boxShadow: `0px 2px 4px rgba(96, 97, 112, 0.16), 0px 0px 1px rgba(40, 41, 61, 0.04)`,
             }}
+            onMouseLeave={handleLeave}
+            role="listbox"
+            id="ex-list-box"
           >
-            <FaLocationArrow sx={{ m: 'auto' }} />
-          </div>
-          <ComboboxInput
-            value={value}
-            required={!mapIssues}
-            onChange={(e) => {
-              setValue(e.target.value);
-            }}
-            disabled={!ready}
-            placeholder="Escribe tu dirección"
-          />
-        </div>
-        <ComboboxPopover sx={{ bg: 'white' }}>
-          <ComboboxList sx={{ listStyleType: 'none', pl: '8px' }}>
-            {status === 'OK' &&
-              data.map(({ id, description }) => (
-                <ComboboxOption
-                  key={id}
-                  value={description}
-                  sx={{ py: '4px', cursor: 'pointer', height: '35px' }}
-                />
-              ))}
-          </ComboboxList>
-        </ComboboxPopover>
-      </Combobox>
-    </div>
+            {renderSuggestions()}
+          </ul>
+        )}
+      </div>
+    </Fragment>
   );
 };
 

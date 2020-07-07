@@ -1,29 +1,24 @@
 /**@jsx jsx */
+import { useEffect } from 'react';
 import { jsx } from 'theme-ui';
 
-import Layout from '../components/layout';
-import UserForm from '../components/form/user-form';
-import { ProtectedRoute } from '../components/protected-route';
 import { useAuth0 } from '../../utils/auth';
 
+import Layout from '../components/layout';
+import FormUser from '../components/form/form-user';
+import Loading from '../components/ui/loading';
+import { ProtectedRoute } from '../components/protected-route';
+
 const Continue = () => {
-  const { user, getTokenSilently, logout, loginWithRedirect } = useAuth0();
+  const { user, getTokenSilently } = useAuth0();
   return (
-    <ProtectedRoute>
-      <Layout>
+    <Layout>
+      <ProtectedRoute>
         <div sx={{ variant: 'container.primary' }}>
-          {user && (
-            <UserForm
-              title="Completa tu perfil"
-              user={user}
-              getTokenSilently={getTokenSilently}
-              logout={logout}
-              loginWithRedirect={loginWithRedirect}
-            />
-          )}
+          {user && <FormUser user={user} getTokenSilently={getTokenSilently} />}
         </div>
-      </Layout>
-    </ProtectedRoute>
+      </ProtectedRoute>
+    </Layout>
   );
 };
 

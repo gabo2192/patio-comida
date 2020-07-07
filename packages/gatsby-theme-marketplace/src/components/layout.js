@@ -1,24 +1,50 @@
 /**@jsx jsx */
 import { Fragment } from 'react';
-import { jsx } from 'theme-ui';
+import { jsx, Styled } from 'theme-ui';
 import { Global } from '@emotion/core';
 
 import Header from './header/header';
 
 const Layout = ({ children }) => {
   return (
-    <Fragment>
+    <div
+      sx={{
+        backgroundColor: 'background',
+        minHeight: '100vh',
+        pb: 3,
+      }}
+    >
       <Global
         styles={{
-          body: { margin: 0, height: '100%' },
-          html: { height: '100%', boxSizing: 'border-box' },
-          '#___gatsby': { height: '100%' },
-          '#gatsby-focus-wrapper': { height: '100%' },
+          '*': {
+            boxSizing: 'border-box',
+          },
+          'html,body': {
+            margin: 0,
+          },
+          '.visually-hidden': {
+            position: 'absolute !important',
+            height: '1px',
+            width: '1px',
+            overflow: 'hidden',
+            clip: 'rect(1px, 1px, 1px, 1px)',
+            whiteSpace: 'nowrap',
+          },
         }}
       />
       <Header />
-      <main sx={{ height: 'calc(100% - 108px)' }}>{children}</main>
-    </Fragment>
+      <div
+        sx={{
+          mb: 5,
+          mt: [2, 2, 4],
+          mx: 'auto',
+          maxWidth: (t) => `calc(${t.breakpoints.slice(-1)[0]} + 96px)`,
+          width: '90vw',
+        }}
+      >
+        <main sx={{ variant: 'marketplace.layout.main' }}>{children}</main>
+      </div>
+    </div>
   );
 };
 

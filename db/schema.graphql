@@ -2,58 +2,108 @@ enum Service {
   DELIVERY
   STOREPICKUP
 }
-
-enum Category {
-  GRILL
-  ROASTED
-  CHINESE
-  SUSHI
-  PERUVIAN
-  MENU
-  FISH
-  CAKE
-  SELVA
-  SIERRA
-  COSTA
-  SOUPS
-  FASTFOOD
-  OTHER
+enum Role {
+  USER
+  SELLER
+  ADMIN
 }
 
-type Market {
+enum PaymentMethod {
+  VISA
+  MASTERCARD
+  CASH
+}
+
+enum Status {
+  PENDING
+  APROVED
+  READY
+  DELIVERED
+  COMPLETED
+  CANCELED
+}
+
+type Address @embedded {
+  name: String!
+  address: String!
+  lat: Float!
+  lng: Float!
+}
+
+type Market @collection(name: "markets") {
   name: String! @unique
   path: String!
   logo: String!
-  background: String!
   services: [Service!]!
-  categories: [Category!]!
-  slogan: String!
   phone: String!
-  address: String!
+  whatsapp: String!
+  address: Address!
   published: Boolean!
-  products: [Product]
+  products: [Product] @relation
   owner: User!
+  paymentMethods: [PaymentMethod!]!
+  schedule: String!
 }
 
-type Product {
+type Product @collection(name: "products") {
   title: String!
+  description: String!
+  price: Float!
+  image: String!
+  market: Market!
+  dailyStock: Int!
+  stock: Int!
+  timesBought: Int!
+  category: String!
+  featured: Boolean!
+  dayBoolean: Boolean!
+  scheduleBoolean: Boolean!
+  rating: Float!
+  owner: User! @relation(name: "owner")
+}
+
+type User @collection(name: "users") {
+  authId: String! @unique
+  avatar: String!
+  role: Role!
+  market: Market
+  products: [Product] @relation(name: "owner")
+  email: String
+  phone: String
+  name: String
+  address: [Address]
+  whatsapp: String
+  cart: [CartItem]
+  order: [Order]
+}
+
+type CartItem @embedded {
+  item: Product
+  quantity: Int!
+  user: User!
+}
+
+type OrderItem @embedded {
+  productId: ID!
+  title: String!
+  description: String!
   market: Market!
   image: String!
-  description: String!
-  featured: Boolean!
-  categories: [Category!]!
   price: Float!
-  owner: User!
+  quantity: Int!
+  user: User
 }
 
-type User {
-  authId: String! @unique
-  market: Market
-  products: [Product]
+type Order @collection(name: "orders") {
+  products: [OrderItem!]!
+  total: Float!
+  user: User!
+  createdAt: Date!
+  status: Status!
 }
 
 type Query {
-  allMarkets: [Market!]!
-  allProducts: [Product]!
+  allMarkets: [Market!]! @index(name: "all_markets")
+  allProducts: [Product]! @index(name: "all_products")
   findUserByAuthId(authId: String!): User
 }
